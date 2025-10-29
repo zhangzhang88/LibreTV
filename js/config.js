@@ -22,32 +22,32 @@ const SITE_CONFIG = {
 
 // API站点配置
 const API_SITES = {
-    "custom_0": {
+    "modu": {
         "api": "https://www.mdzyapi.com/api.php/provide/vod",
         "name": "魔都",
         "adult": false
     },
-    "custom_1": {
+    "heimuer": {
         "api": "https://json02.heimuer.xyz/api.php/provide/vod",
         "name": "黑木耳",
         "adult": false
     },
-    "custom_2": {
+    "mozhuazy": {
         "api": "https://mozhuazy.com/api.php/provide/vod",
         "name": "魔爪资源",
         "adult": false
     },
-    "custom_3": {
+    "bfzy": {
         "api": "https://bfzyapi.com/api.php/provide/vod",
         "name": "暴风资源",
         "adult": false
     },
-    "custom_4": {
+    "rycj": {
         "api": "https://cj.rycjapi.com/api.php/provide/vod",
         "name": "如意资源",
         "adult": false
     },
-    "custom_5": {
+    "wolong": {
         "api": "https://wolongzyw.com/api.php/provide/vod",
         "name": "卧龙资源",
         "adult": false
