@@ -13,7 +13,7 @@ const PASSWORD_CONFIG = {
 
 // 网站信息配置
 const SITE_CONFIG = {
-    name: 'LibreTV',
+    name: '在线观影',
     url: 'https://libretv.is-an.org',
     description: '免费在线视频搜索与观看平台',
     logo: 'image/logo.png',
@@ -22,12 +22,36 @@ const SITE_CONFIG = {
 
 // API站点配置
 const API_SITES = {
-    testSource: {
-        api: 'https://www.example.com/api.php/provide/vod',
-        name: '空内容测试源',
-        adult: true
+    "custom_0": {
+        "api": "https://www.mdzyapi.com/api.php/provide/vod",
+        "name": "魔都",
+        "adult": false
+    },
+    "custom_1": {
+        "api": "https://json02.heimuer.xyz/api.php/provide/vod",
+        "name": "黑木耳",
+        "adult": false
+    },
+    "custom_2": {
+        "api": "https://mozhuazy.com/api.php/provide/vod",
+        "name": "魔爪资源",
+        "adult": false
+    },
+    "custom_3": {
+        "api": "https://bfzyapi.com/api.php/provide/vod",
+        "name": "暴风资源",
+        "adult": false
+    },
+    "custom_4": {
+        "api": "https://cj.rycjapi.com/api.php/provide/vod",
+        "name": "如意资源",
+        "adult": false
+    },
+    "custom_5": {
+        "api": "https://wolongzyw.com/api.php/provide/vod",
+        "name": "卧龙资源",
+        "adult": false
     }
-    //ARCHIVE https://telegra.ph/APIs-08-12
 };
 
 // 定义合并方法
