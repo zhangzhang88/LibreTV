@@ -1,24 +1,14 @@
 {
-  "rewrites": [
-    {
-      "source": "/proxy/:path*",
-      "destination": "/api/proxy/:path*"
-    },
-    {
-      "source": "/s=:query",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/player.html",
-      "destination": "/player.html"
-    },
-    {
-      "source": "/player.html/:path*",
-      "destination": "/player.html"
-    },
-    {
-      "source": "/:path*",
-      "destination": "/:path*"
-    }
+  "version": 2,
+  "builds": [
+    { "src": "api/**/*.mjs", "use": "@vercel/node" },
+    { "src": "**/*", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/proxy/(.*)", "dest": "/api/proxy/$1" },
+    { "src": "/s=(.*)", "dest": "/index.html" },
+    { "src": "/player.html(?:/.*)?", "dest": "/player.html" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
