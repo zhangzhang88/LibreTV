@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/proxy/:path*", "destination": "/api/proxy/:path*" },
     { "source": "/s=:query", "destination": "/api/page" },
     { "source": "/player.html", "destination": "/api/player" },
