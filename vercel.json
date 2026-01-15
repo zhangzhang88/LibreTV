@@ -6,9 +6,11 @@
   ],
   "routes": [
     { "src": "/proxy/(.*)", "dest": "/api/proxy/$1" },
-    { "src": "/s=(.*)", "dest": "/index.html" },
-    { "src": "/player.html(?:/.*)?", "dest": "/player.html" },
+    { "src": "/s=(.*)", "dest": "/api/page" },
+    { "src": "/player.html(?:/.*)?", "dest": "/api/player" },
+    { "src": "/index.html", "dest": "/api/page" },
+    { "src": "/", "dest": "/api/page" },
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { "src": "/(.*)", "dest": "/api/page" }
   ]
 }
