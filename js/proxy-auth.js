@@ -13,21 +13,30 @@ async function getPasswordHash() {
     if (cachedPasswordHash) {
         return cachedPasswordHash;
     }
+    const envPasswordHash = window.__ENV__?.PASSWORD || null;
     
     // 1. 优先从已存储的代理鉴权哈希获取
     const storedHash = localStorage.getItem('proxyAuthHash');
     if (storedHash) {
-        cachedPasswordHash = storedHash;
-        return storedHash;
+        if (envPasswordHash && storedHash !== envPasswordHash) {
+            localStorage.removeItem('proxyAuthHash');
+        } else {
+            cachedPasswordHash = storedHash;
+            return storedHash;
+        }
     }
     
     // 2. 尝试从密码验证状态获取（password.js 验证后存储的哈希）
     const passwordVerified = localStorage.getItem('passwordVerified');
     const storedPasswordHash = localStorage.getItem('passwordHash');
     if (passwordVerified === 'true' && storedPasswordHash) {
-        localStorage.setItem('proxyAuthHash', storedPasswordHash);
-        cachedPasswordHash = storedPasswordHash;
-        return storedPasswordHash;
+        if (envPasswordHash && storedPasswordHash !== envPasswordHash) {
+            localStorage.removeItem('proxyAuthHash');
+        } else {
+            localStorage.setItem('proxyAuthHash', storedPasswordHash);
+            cachedPasswordHash = storedPasswordHash;
+            return storedPasswordHash;
+        }
     }
     
     // 3. 尝试从用户输入的密码生成哈希
@@ -46,9 +55,9 @@ async function getPasswordHash() {
     }
     
     // 4. 如果用户没有设置密码，尝试使用环境变量中的密码哈希
-    if (window.__ENV__ && window.__ENV__.PASSWORD) {
-        cachedPasswordHash = window.__ENV__.PASSWORD;
-        return window.__ENV__.PASSWORD;
+    if (envPasswordHash) {
+        cachedPasswordHash = envPasswordHash;
+        return envPasswordHash;
     }
     
     return null;
@@ -75,6 +84,53 @@ async function addAuthToProxyUrl(url) {
     } catch (error) {
         console.error('添加代理鉴权失败:', error);
         return url;
+    }
+}
+
+/**
+ * 构建带鉴权的代理URL
+ */
+async function buildProxiedUrl(targetUrl) {
+    if (!targetUrl) {
+        return '';
+    }
+    const baseProxyUrl = (typeof PROXY_URL === 'string' ? PROXY_URL : '/proxy/') + encodeURIComponent(targetUrl);
+    return await addAuthToProxyUrl(baseProxyUrl);
+}
+
+/**
+ * 图片加载失败时切换到代理URL
+ */
+async function handleImageProxyError(img) {
+    if (!img) return;
+    const originalSrc = img.dataset.originalSrc || img.currentSrc || img.src;
+    const fallbackSrc = img.dataset.fallbackSrc || '';
+
+    if (img.dataset.proxyTried === 'true') {
+        if (fallbackSrc) {
+            img.onerror = null;
+            img.src = fallbackSrc;
+            img.classList.add('object-contain');
+        }
+        return;
+    }
+
+    img.dataset.proxyTried = 'true';
+    try {
+        const proxiedUrl = await buildProxiedUrl(originalSrc);
+        if (proxiedUrl) {
+            img.src = proxiedUrl;
+            img.classList.add('object-contain');
+            return;
+        }
+    } catch (error) {
+        console.warn('切换代理图片失败:', error);
+    }
+
+    if (fallbackSrc) {
+        img.onerror = null;
+        img.src = fallbackSrc;
+        img.classList.add('object-contain');
     }
 }
 
@@ -123,5 +179,8 @@ window.ProxyAuth = {
     addAuthToProxyUrl,
     validateProxyAuth,
     clearAuthCache,
-    getPasswordHash
+    getPasswordHash,
+    buildProxiedUrl
 };
+
+window.handleImageProxyError = handleImageProxyError;

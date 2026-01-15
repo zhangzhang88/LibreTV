@@ -6,11 +6,10 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
-
-dotenv.config();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const config = {
   port: process.env.PORT || 8080,
@@ -178,13 +177,17 @@ app.get('/proxy/:encodedUrl', async (req, res) => {
     
     const makeRequest = async () => {
       try {
+        const targetOrigin = new URL(targetUrl).origin;
         return await axios({
           method: 'get',
           url: targetUrl,
           responseType: 'stream',
           timeout: config.timeout,
           headers: {
-            'User-Agent': config.userAgent
+            'User-Agent': config.userAgent,
+            'Referer': targetOrigin,
+            'Accept': req.headers.accept || 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+            'Accept-Language': req.headers['accept-language'] || 'zh-CN,zh;q=0.9,en;q=0.8'
           }
         });
       } catch (error) {
