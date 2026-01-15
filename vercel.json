@@ -6,7 +6,6 @@
     { "source": "/player.html", "destination": "/api/player" },
     { "source": "/player.html/:path*", "destination": "/api/player" },
     { "source": "/index.html", "destination": "/api/page" },
-    { "source": "/", "destination": "/api/page" },
-    { "source": "/:path*", "destination": "/api/page" }
+    { "source": "/", "destination": "/api/page" }
   ]
 }
