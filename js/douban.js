@@ -469,7 +469,12 @@ async function fetchDoubanData(url) {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+            const text = await response.text();
+            throw new Error(`非 JSON 响应: ${text.slice(0, 120)}`);
+        }
+
         return await response.json();
     } catch (err) {
         console.error("豆瓣 API 请求失败（直接代理）：", err);
@@ -478,7 +483,10 @@ async function fetchDoubanData(url) {
         const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
         
         try {
-            const fallbackResponse = await fetch(fallbackUrl);
+            const proxiedFallbackUrl = await window.ProxyAuth?.addAuthToProxyUrl ?
+                await window.ProxyAuth.addAuthToProxyUrl(PROXY_URL + encodeURIComponent(fallbackUrl)) :
+                PROXY_URL + encodeURIComponent(fallbackUrl);
+            const fallbackResponse = await fetch(proxiedFallbackUrl, fetchOptions);
             
             if (!fallbackResponse.ok) {
                 throw new Error(`备用API请求失败! 状态: ${fallbackResponse.status}`);
